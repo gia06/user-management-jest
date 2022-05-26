@@ -9,21 +9,21 @@ export class UsersController {
 
     @Get()
     listUsers() {
-        return this.usersService.findAll()
+        return this.usersService.getUsers()
     }
 
     @Post()
     createUsers(@Body() body: CreateUserDto) {
-        return this.usersService.create(body.content)
+        return this.usersService.createUser(body)
     }
 
-    @Get("/:id")
-    async getUser(@Param('id') id: string) {
-        const user = await this.usersService.findOne(id)
-        if(!user) {
-            throw new NotFoundException('user not found')
-        }
+    // @Get("/:id")
+    // async getUser(@Param('id') id: string) {
+    //     const user = await this.usersService.findOne(id)
+    //     if(!user) {
+    //         throw new NotFoundException('user not found')
+    //     }
 
-        return user
-    }
+    //     return user
+    // }
 }

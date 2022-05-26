@@ -2,5 +2,9 @@ import {IsString} from 'class-validator'
 
 export class CreateUserDto {
     @IsString()
-    content: string;
+    nickname: string;
+    firstname: string;
+    lastname: string;
+    password: string;
+    
 }

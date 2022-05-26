@@ -1,28 +1,27 @@
-import {readFile, writeFile} from "fs/promises"
+import { InjectModel } from "@nestjs/mongoose"
 import { Injectable } from "@nestjs/common"
+import { User, UserDocument } from "./schema/user.schema"
+import { Model, FilterQuery } from "mongoose"
+import { CreateUserDto } from "./dtos/create-user.dto"
 
 @Injectable()
 export class UsersRepository {
-    async findOne(id: string) {
-        const contents = await readFile('users.json', 'utf8')
-        const users = JSON.parse(contents)
-        return users[id]
+    constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+
+    async findOne(userFilterQuery: FilterQuery<User>): Promise<User> {
+        return this.userModel.findOne(userFilterQuery)
     }
 
-    async findAll() {
-        const contents = await readFile('users.json', 'utf8')
-        const users = JSON.parse(contents)
-        
-        return users
+    async find(usersFilterQuery: FilterQuery<User>): Promise<User[]> {
+        return this.userModel.find(usersFilterQuery)
     }
 
-    async create(user: string) {
-        const contents = await readFile('users.json', 'utf8')
-        const users = JSON.parse(contents)
+    async create(user: CreateUserDto): Promise<User> {
+        const newUser = new this.userModel(user);
+        return newUser.save()
+    }
 
-        const id = Math.floor(Math.random() * 999)
-        users[id] = {id, content: user} 
-
-        await writeFile('users.json', JSON.stringify(users))
+    async findOneAndUpdate(userFilterQuery: FilterQuery<User>, user: Partial<User>): Promise<User> {
+        return this.userModel.findOneAndUpdate(userFilterQuery, user, { new: true });
     }
 }

@@ -1,20 +1,28 @@
 import {UsersRepository} from "./users.repository"
 import { Injectable } from "@nestjs/common"
+import { User } from "./schema/user.schema"
+import { CreateUserDto } from "./dtos/create-user.dto"
+
 
 @Injectable()
 export class UsersService {
+    constructor(private readonly usersRepository: UsersRepository) {}
 
-    constructor (public usersRepo : UsersRepository) {}
-
-    findOne(id: string) {
-        return this.usersRepo.findOne(id)
+    async getUserByName(userName: string): Promise<User> {
+        return this.usersRepository.findOne({userName})
     }
 
-    findAll() {
-        return this.usersRepo.findAll()
+    async getUsers(): Promise<User[]> {
+        return this.usersRepository.find({});
     }
 
-    create(content: string) {
-        this.usersRepo.create(content)
+    async createUser(user: CreateUserDto): Promise<User> {
+        return this.usersRepository.create({
+            nickname: user.nickname,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            password: user.password
+        })
     }
+    
 }
